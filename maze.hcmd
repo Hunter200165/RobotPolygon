@@ -1,0 +1,867 @@
+using units::base64 import base64encode;
+
+local $top, 1;
+local $bottom, 2;
+local $left, 4;
+local $right, 8;
+local $mainstream, 16;
+local $marked, 32;
+
+# 1111
+
+gfunc 'preview*' rawname=(true) { };
+gfunc $yield { };
+gfunc $start { rect 0, 0, ((getwidth) - 1; (getheight) - 1), color='0xffffff', fillcolor='0xffffff'; };
+func $printf { };
+
+local $nottop : bnot $top;
+local $notbottom : bnot $bottom;
+local $notleft : bnot $left;
+local $notright : bnot $right;
+local $notmainstream : bnot $mainstream;
+
+local $PREVIEW : true;
+local $PERSQUARE, 4;
+
+func $updateCell 
+{
+	local $i : arg 0;
+	local $k : arg 1;
+	local $a : arg 2;
+	local $perSquare : arg 3;
+	endexp 4;
+	
+	local $coordX, (($k + 1) * $perSquare);
+	local $coordY, (($i + 1) * $perSquare);
+	local $coordXNext : $coordX + $perSquare;
+	local $coordYNext : $coordY + $perSquare;
+	
+	rect $coordX, $coordY, ($coordXNext + 1), ($coordYNext + 1), color=(int '0xFFFFFF');
+
+	if ($a & $top)
+	{
+		line $coordX, $coordY, ($coordXNext + 1), $coordY, color=0;
+	};
+	
+	if ($a & $bottom)
+	{
+		line $coordX, $coordYNext, ($coordXNext + 1), $coordYNext, color=0;
+	};
+	
+	if ($a & $left)
+	{
+		line $coordX, $coordY, $coordX, ($coordYNext + 1), color=0;
+	};
+	
+	if ($a & $right)
+	{
+		line $coordXNext, $coordY, $coordXNext, ($coordYNext + 1), color=0;
+	};
+	
+	if ($a & $marked)
+	{
+		rect ($coordX + 3), ($coordY + 3), ($coordXNext - 4), ($coordYNext - 4), color=(int '0xAAAAAA'), fillcolor=(int '0xFF0000'), style=solid, fillstyle=clear;
+	};
+};
+
+func $updateCellPath 
+{
+	local $i : arg 0;
+	local $k : arg 1;
+	local $a : arg 2;
+	local $perSquare : arg 3;
+	endexp 4;
+	
+	local $coordX, (($k + 1) * $perSquare);
+	local $coordY, (($i + 1) * $perSquare);
+	local $coordXNext : $coordX + $perSquare;
+	local $coordYNext : $coordY + $perSquare;
+	
+	rect $coordX, $coordY, $coordXNext, $coordYNext, color=(int '0xFFFFFF');
+
+	if ($a & $top)
+	{
+		line $coordX, $coordY, $coordXNext, $coordY, color=0;
+	};
+	
+	if ($a & $bottom)
+	{
+		line $coordX, $coordYNext, $coordXNext, $coordYNext, color=0;
+	};
+	
+	if ($a & $left)
+	{
+		line $coordX, $coordY, $coordX, $coordYNext, color=0;
+	};
+	
+	if ($a & $right)
+	{
+		line $coordXNext, $coordY, $coordXNext, $coordYNext, color=0;
+	};
+	
+	rect ($coordX + 3), ($coordY + 3), ($coordXNext - 4), ($coordYNext - 4), color=(int '0xFF'), fillcolor=(int '0xFF'), fillstyle=solid;
+};
+
+func $generateMaze 
+{
+	local $w : arg 0;
+	local $h : arg 1;
+	endexp 2;
+	
+	# Generate primary mesh
+	local $result : array::create;
+	for $i 1, $h 
+	{
+		local $a : array::create;
+		for $k 1, $w 
+		{
+			$a.add! 0;
+		};
+		$result.add! $a;
+	};
+	
+	for $i 0, ($h - 1)
+	{
+		local $a1, $result[$i][0];
+		local $a2, $result[$i][[$w - 1]];
+		
+		$a1 = ($a1 | $left);
+		$a2 = ($a2 | $right);
+		
+		$result[$i][0] = $a1;
+		$result[$i][[$w - 1]] = $a2;
+	};
+	
+	for $i 0, ($w - 1)
+	{
+		local $a1, $result[0][$i];
+		local $a2, $result[[$h - 1]][$i];
+		
+		$a1 = ($a1 | $top);
+		$a2 = ($a2 | $bottom);
+		
+		$result[0][$i] = $a1;
+		$result[[$h - 1]][$i] = $a2;
+	};
+	
+	# Generate at lest one valid path
+	local $pathGenerated, (false);
+	local $paths, 0;
+	
+	$paths = (array::create);
+	# local $startX : randint 0, $w;
+	local $startX, 0;
+	local $currentX, 0;
+	local $currentY, 0;
+	# local $exitX : randint 0, $w;
+	local $exitX ($w - 1);
+	local $exitY : $h - 1;
+	
+	$result[[$h idiv 2]][[$w idiv 2]] = ($left | : $right | : $top | : $bottom | $mainstream);
+	
+	local $occupiedX : array::create;
+	local $occupiedY : array::create;
+	$occupiedX.add! ($w idiv 2);
+	$occupiedY.add! ($h idiv 2);
+	
+	$result[$exitY][$exitX] = ($result[$exitY][$exitX] & $notbottom);
+	
+	renderMaze $result, $PERSQUARE;
+	
+	# Path is 4 bit direction identifier
+	$paths.add! 4;
+	while ($occupiedX.length < ($h * $w))
+	{
+		for $i 1, $paths.length : 
+			$paths.remove!;
+	
+		local $rind : randint 0, $occupiedX.length;
+		while (true)
+		{
+			$currentX = $occupiedX[$rind];
+			$currentY = $occupiedY[$rind];
+			
+			if ($currentX < 0)
+			{
+				$rind = (randint 0, $occupiedX.length);
+				continue;
+			};
+			
+			if (($currentX > 0) && (not : $result[$currentY][[$currentX - 1]] & (static : $right | $mainstream)))
+			{
+				$paths.add! 3;
+				break;
+			};
+			if (($currentY > 0) && (not : $result[[$currentY - 1]][$currentX] & (static : $bottom | $mainstream)))
+			{
+				$paths.add! 12;
+				break;
+			};
+			if (($currentX < ($w - 1)) && (not : $result[$currentY][[$currentX + 1]] & (static : $left | $mainstream)))
+			{
+				$paths.add! 1;
+				break;
+			};
+			if (($currentY < ($h - 1)) && (not : $result[[$currentY + 1]][$currentX] & (static : $top | $mainstream)))
+			{
+				$paths.add! 4;
+				break;
+			};
+			
+			$occupiedX[$rind] = -1;
+			$occupiedY[$rind] = -1;
+			$rind = (randint 0, $occupiedX.length);
+			# $rind = (($rind + 1) mod $occupiedX.length);
+		};
+	
+		printf 'Generated %d/%d (%.12f%%)\n', $occupiedX.length, ($h * $w), (($occupiedX.length / ($h * $w)) * 100);
+	
+		local $step, 0;
+	
+		while (($step < (ceil : ($w + $h) / 4)) && : ($paths.length != 0) && : ($currentX != $exitX) || ($currentY != $exitY))
+		{
+			$step = ($step + 1);
+			# if ($paths.length == 0)
+			# {
+				# return $result;
+			# };
+			
+			# printf 'currentx = %d; currenty = %d\n', $currentX, $currentY;
+			
+			local $currentPath, $paths[[randint 0, $paths.length]];
+			for $i 1, $paths.length : 
+				$paths.remove!;
+			# $paths = (array::create);
+				
+			# printf '$currentPath = %d\n', $currentPath;
+				
+			local $dx, 0;
+			local $dy, 0;
+			
+			if (($currentPath & 3) == 3)
+			{
+				$dx = -1;
+			}
+			else : if (($currentPath & 3) == 1)
+			{
+				$dx = 1;
+			};
+			
+			if (($currentPath & 12) == 12)
+			{
+				$dy = -1
+			}
+			else : if (($currentPath & 12) == 4)
+			{
+				$dy = 1;
+			};
+			
+			# printf 'dx = %d, dy = %d\n', $dx, $dy;
+			
+			local $c, (static : $left | : $right | : $top | : $bottom | $mainstream);
+			
+			if (($currentX >= 0) && ($currentY >= 0))
+			{
+				if ($dx == 1)
+				{
+					$result[$currentY][$currentX] = ($result[$currentY][$currentX] & $notright);
+				}
+				else : if ($dx == -1) 
+				{
+					$result[$currentY][$currentX] = ($result[$currentY][$currentX] & $notleft);
+				}
+				else : if ($dy == 1)
+				{
+					$result[$currentY][$currentX] = ($result[$currentY][$currentX] & $notbottom);
+				}
+				else 
+				{
+					$result[$currentY][$currentX] = ($result[$currentY][$currentX] & $nottop);
+				};
+				
+				updateCell $currentY, $currentX, $result[$currentY][$currentX], $PERSQUARE;
+			};
+			
+			if ($dx == 1)
+			{
+				$c = ($c & $notleft);
+			}
+			else : if ($dx == -1) 
+			{
+				$c = ($c & $notright);
+			}
+			else : if ($dy == 1)
+			{
+				$c = ($c & $nottop);
+			}
+			else 
+			{
+				$c = ($c & $notbottom);
+			};
+			
+			$currentX = : $currentX + $dx;
+			$currentY = : $currentY + $dy;
+			
+			$occupiedX.add! $currentX;
+			$occupiedY.add! $currentY;
+			
+			$result[$currentY][$currentX] = $c;
+			updateCell $currentY, $currentX, $result[$currentY][$currentX], $PERSQUARE;
+			
+			if (($currentX > 0) && (not : $result[$currentY][[$currentX - 1]] & (static : $right | $mainstream)))
+			{
+				$paths.add! 3;
+			};
+			
+			if (($currentX < ($w - 1)) && (not : $result[$currentY][[$currentX + 1]] & (static : $left | $mainstream)))
+			{
+				$paths.add! 1;
+			};
+			
+			if (($currentY > 0) && (not : $result[[$currentY - 1]][$currentX] & (static : $bottom | $mainstream)))
+			{
+				$paths.add! 12;
+			};
+			
+			if (($currentY < ($h - 1)) && (not : $result[[$currentY + 1]][$currentX] & (static : $top | $mainstream)))
+			{
+				$paths.add! 4;
+			};
+			
+			if $PREVIEW
+			{
+				preview*;
+				yield;
+			};
+		};
+	};
+	
+	$result[0][$startX] = ($result[0][$startX] & $nottop);
+	$result[$exitY][$exitX] = ($result[$exitY][$exitX] & $notbottom);
+	
+	updateCell 0, $startX, $result[0][$startX], $PERSQUARE;
+	updateCell $exitY, $exitX, $result[$exitY][$exitX], $PERSQUARE;
+	
+	return $result;
+};
+
+local $started, 0;
+
+func $renderMaze 
+{
+	local $maze : arg 0;
+	local $perSquare : defaultarg 1, $PERSQUARE;
+	endexp 2;
+	
+	local $color : defaultparam color, 0;
+	
+	local $h, $maze.length;
+	local $w, $maze[0].length;
+	
+	if (not $started)
+	{
+		setwidth (($w + 2) * $perSquare);
+		setheight (($h + 2) * $perSquare);
+        rect 0, 0, (($w + 2) * $perSquare; ($h + 2) * $perSquare), color='0xffffff', fillcolor='0xffffff';
+		start;
+	};
+	
+	for $i 0, ($h - 1)
+	{
+		for $k 0, ($w - 1)
+		{
+			local $a, $maze[$i][$k];
+			
+			if ($a != 0)
+			{
+				local $coordX, (($k + 1) * $perSquare);
+				local $coordY, (($i + 1) * $perSquare);
+				local $coordXNext : $coordX + $perSquare;
+				local $coordYNext : $coordY + $perSquare;
+			
+				if ($a & $top)
+				{
+					line $coordX, $coordY, $coordXNext, $coordY, color=$color;
+				};
+				
+				if ($a & $bottom)
+				{
+					line $coordX, $coordYNext, $coordXNext, $coordYNext, color=$color;
+				};
+				
+				if ($a & $left)
+				{
+					line $coordX, $coordY, $coordX, $coordYNext, color=$color;
+				};
+				
+				if ($a & $right)
+				{
+					line $coordXNext, $coordY, $coordXNext, $coordYNext, color=$color;
+				};
+			};
+		};
+		
+		if $PREVIEW 
+		{
+			preview*;
+			yield;
+		};
+	};
+	
+};
+
+local $WIDTH, 0;
+
+func $search 
+{
+	local $maze : arg 0;
+	
+	local $h, $maze.length;
+	local $w, $maze[0].length;
+	
+	local $list : object::create;
+	$list.next = (null);
+	
+	local $pathsX : array::create;
+	local $pathsY : array::create;
+	
+	local $current : object::create;
+	$current.next = (null);
+	$current.x = 0;
+	$current.y = 0;
+	
+	local $last, $list;
+	
+	$list.next = $current;
+	
+	local $time, 2;
+	$maze[0][0] = ($maze[0][0] | (1 << 6));
+	
+	while (true)
+	{
+		if ($list.next == (static : null))
+		{
+			break;
+		};
+	
+		local $first, $list.next;
+		if ($first.next == (null))
+		{
+			$last = $list;
+		};
+		
+		$list.next = $list.next.next;
+		
+		# printf 'Current X = %d; Current Y = %d\n', $first.x, $first.y;
+		
+		if (($first.x == ($w - 1)) && ($first.y == ($h - 1)))
+		{
+			printf 'Hooray!\n';
+			break;
+		};
+		
+		if (($first.x > 0) && (not : $maze[$first.y][[$first.x - 1]] & (static : $right | $marked)))
+		{
+			$current = (object::create);
+			if $WIDTH
+			{
+				$current.next = (null);
+			}
+			else 
+			{
+				$current.next = $list.next;
+			};
+			$current.x = ($first.x - 1);
+			$current.y = $first.y;
+			$maze[$first.y][[$first.x - 1]] = ($maze[$first.y][[$first.x - 1]] | : $marked | ($time << 6));
+			$time = ($time + 1);
+			updateCell $first.y, ($first.x - 1), $maze[$first.y][[$first.x - 1]], $PERSQUARE;
+			if $WIDTH
+			{
+				$last.next = $current;
+				$last = $current;
+			}
+			else 
+			{
+				$list.next = $current;
+			};
+		};
+		
+		if (($first.y > 0) && (not : $maze[[$first.y - 1]][$first.x] & (static : $bottom | $marked)))
+		{
+			$current = (object::create);
+			if $WIDTH
+			{
+				$current.next = (null);
+			}
+			else 
+			{
+				$current.next = $list.next;
+			};
+			$current.x = $first.x;
+			$current.y = ($first.y - 1);
+			$maze[[$first.y - 1]][$first.x] = ($maze[[$first.y - 1]][$first.x] | : $marked | ($time << 6));
+			$time = ($time + 1);
+			updateCell ($first.y - 1), $first.x, $maze[[$first.y - 1]][$first.x], $PERSQUARE;
+			if $WIDTH
+			{
+				$last.next = $current;
+				$last = $current;
+			}
+			else 
+			{
+				$list.next = $current;
+			};
+		};
+		
+		if (($first.x < ($w - 1)) && (not : $maze[$first.y][[$first.x + 1]] & (static : $left | $marked)))
+		{
+			$current = (object::create);
+			if $WIDTH
+			{
+				$current.next = (null);
+			}
+			else 
+			{
+				$current.next = $list.next;
+			};
+			$current.x = ($first.x + 1);
+			$current.y = $first.y;
+			$maze[$first.y][[$first.x + 1]] = ($maze[$first.y][[$first.x + 1]] | : $marked | ($time << 6));
+			$time = ($time + 1);
+			updateCell $first.y, ($first.x + 1), $maze[$first.y][[$first.x + 1]], $PERSQUARE;
+			if $WIDTH
+			{
+				$last.next = $current;
+				$last = $current;
+			}
+			else 
+			{
+				$list.next = $current;
+			};
+		};
+		
+		if (($first.y < ($h - 1)) && (not : $maze[[$first.y + 1]][$first.x] & (static : $top | $marked)))
+		{
+			$current = (object::create);
+			if $WIDTH
+			{
+				$current.next = (null);
+			}
+			else 
+			{
+				$current.next = $list.next;
+			};
+			$current.x = $first.x;
+			$current.y = ($first.y + 1);
+			$maze[[$first.y + 1]][$first.x] = ($maze[[$first.y + 1]][$first.x] | : $marked | ($time << 6));
+			$time = ($time + 1);
+			updateCell ($first.y + 1), $first.x, $maze[[$first.y + 1]][$first.x], $PERSQUARE;
+			if $WIDTH
+			{
+				$last.next = $current;
+				$last = $current;
+			}
+			else 
+			{
+				$list.next = $current;
+			};
+		};
+		
+		if $PREVIEW
+		{
+			preview*;
+			yield;
+		};
+	};
+	
+	local $gotTime ($maze[[$h - 1]][[$w - 1]] >> 6);
+	local $curx, ($w - 1);
+	local $cury, ($h - 1);
+	while (($curx != 0) || ($cury != 0))
+	{
+		local $a, $maze[$cury][$curx];
+		updateCellPath $cury, $curx, $a, $PERSQUARE; 
+		if $PREVIEW
+		{
+			preview*;
+			yield;
+		};
+		
+		if (($curx != ($w - 1)) || ($cury != ($h - 1))) :
+			if ((not : $a & $bottom) && : ($maze[[$cury + 1]][$curx] >> 6) && ($gotTime > ($maze[[$cury + 1]][$curx] >> 6)))
+			{
+				$cury = ($cury + 1);
+				$gotTime = ($maze[$cury][$curx] >> 6);
+				continue;
+			};
+		if ((not : $a & $top) && : ($maze[[$cury - 1]][$curx] >> 6) && ($gotTime > ($maze[[$cury - 1]][$curx] >> 6)))
+		{
+			$cury = ($cury - 1);
+			$gotTime = ($maze[$cury][$curx] >> 6);
+			continue;
+		};
+		if ((not : $a & $left) && : ($maze[$cury][[$curx - 1]] >> 6) && ($gotTime > ($maze[$cury][[$curx - 1]] >> 6)))
+		{
+			$curx = ($curx - 1);
+			$gotTime = ($maze[$cury][$curx] >> 6);
+			continue;
+		};
+		if ((not : $a & $right) && : ($maze[$cury][[$curx + 1]] >> 6) && ($gotTime > ($maze[$cury][[$curx + 1]] >> 6)))
+		{
+			$curx = ($curx + 1);
+			$gotTime = ($maze[$cury][$curx] >> 6);
+			continue;
+		};
+		
+		break;
+	};
+	updateCellPath 0, 0, $maze[0][0], $PERSQUARE;
+};
+
+func $rotate
+{
+	local $mazeCell : arg 0;
+	local $side : arg 1;
+	endexp 2;
+	local $result, ($mazeCell & (bnot 15));
+	
+	if ($side == 'n') :
+		return $mazeCell;
+		
+	if ($side == 'w')
+	{
+		if ($mazeCell & $top)
+		{
+			$result = ($result + $right);
+		};
+		if ($mazeCell & $bottom)
+		{
+			$result = ($result + $left);
+		};
+		if ($mazeCell & $left)
+		{
+			$result = ($result + $top);
+		};
+		if ($mazeCell & $right)
+		{
+			$result = ($result + $bottom);
+		};
+		return $result;
+	};
+	
+	if ($side == 'e')
+	{
+		if ($mazeCell & $top)
+		{
+			$result = ($result + $left);
+		};
+		if ($mazeCell & $bottom)
+		{
+			$result = ($result + $right);
+		};
+		if ($mazeCell & $left)
+		{
+			$result = ($result + $bottom);
+		};
+		if ($mazeCell & $right)
+		{
+			$result = ($result + $top);
+		};
+		return $result;
+		
+	};
+	
+	if ($side == 's')
+	{
+		if ($mazeCell & $top)
+		{
+			$result = ($result + $bottom);
+		};
+		if ($mazeCell & $bottom)
+		{
+			$result = ($result + $top);
+		};
+		if ($mazeCell & $left)
+		{
+			$result = ($result + $right);
+		};
+		if ($mazeCell & $right)
+		{
+			$result = ($result + $left);
+		};
+		return $result;
+	};
+};
+
+func $go
+{
+	local $maze : arg 0;
+	endexp 1;
+	local $h, $maze.length;
+	local $w, $maze[0].length;
+	local $x, 0;
+	local $y, 0;
+	local $direction, 's';
+	
+	while (($y != ($h - 1)) || ($x != ($w - 1)))
+	{
+		printf "x = %d, y = %d\n", $x, $y;
+		$maze[$y][$x] = ($maze[$y][$x] | $marked);
+		updateCell $y, $x, $maze[$y][$x], $PERSQUARE;
+		preview*;
+		yield;
+		local $curCell, (rotate $maze[$y][$x] $direction);
+		
+		printf "x = %d, y = %d, origin = %d  ,curCell = %d, dir = %s\n", $x, $y, $maze[$y][$x], $curCell, $direction;
+		
+		if (not : $curCell & $left)
+		{
+			if ($direction == 'n') 
+			{
+				$x = ($x - 1);
+				$direction = 'w';
+			}
+			else : if ($direction == 's') 
+			{
+				$x = ($x + 1);
+				$direction = 'e';
+			}
+			else : if ($direction == 'w')
+			{
+				$y = ($y + 1);
+				$direction = 's';
+			}
+			else : if ($direction == 'e')
+			{
+				$y = ($y - 1);
+				$direction = 'n';
+			};
+			continue;
+		};
+		if (not : $curCell & $top)
+		{
+			if ($direction == 'n') : $y = ($y - 1);
+			if ($direction == 's') : $y = ($y + 1);
+			if ($direction == 'w') : $x = ($x - 1);
+			if ($direction == 'e') : $x = ($x + 1);
+			continue;
+		};
+		if (not : $curCell & $right)
+		{
+			if ($direction == 'n')
+			{
+				$x = ($x + 1);
+				$direction = 'e';
+			}
+			else : if ($direction == 's')
+			{
+				$x = ($x - 1);
+				$direction = 'w';
+			}
+			else : if ($direction == 'w')
+			{
+				$y = ($y - 1);
+				$direction = 'n';
+			}
+			else : if ($direction == 'e')
+			{
+				$y = ($y + 1);
+				$direction = 's';
+			};
+			continue;
+		};
+		if (not : $curCell & $bottom)
+		{
+			if ($direction == 'n')
+			{
+				$y = ($y + 1);
+				$direction = 's';
+			}
+			else : if ($direction == 's')
+			{
+				$y = ($y - 1);
+				$direction = 'n';
+			}
+			else : if ($direction == 'w')
+			{
+				$x = ($x + 1);
+				$direction = 'e';
+			}
+			else : if ($direction == 'e')
+			{
+				$x = ($x - 1);
+				$direction = 'w';
+			};
+			continue;
+		};
+		
+	};
+	
+};
+
+func $mazeToString 
+{
+	local $maze : arg 0;
+	local $h, $maze.length;
+	local $w, $maze[0].length;
+	
+	local $result : bytes::create;
+	
+	$result.add! ($h & 255);
+	$result.add! (($h >> 8) & 255);
+	$result.add! ($w & 255);
+	$result.add! (($h >> 8) & 255);
+	
+	local $start, 0;
+	local $cell, 0;
+	local $cellisfull, 0;
+	
+	for $i 0, ($h - 1)
+	{
+		for $j $start, ($w - 1), step=2
+		{
+			if $cellisfull
+			{
+				$cell = ($cell | : ($maze[$i][$j] << 4) & (static : 15 << 4));
+				$result.add! $cell;
+				$cellisfull = 0;
+				$cell = 0;
+			}
+			else 
+			{
+				$cell = ($maze[$i][$j] & 15);
+				$cellisfull = 1;
+			};
+		};
+		
+		$start = (($start + 1) mod 2);
+	};
+	
+	if $cellisfull
+	{
+		$result.add! $cell;
+	};
+	
+	return : base64encode $result;
+};
+
+# $PREVIEW = 0;
+
+printf 'Generating maze...\n';
+local $m : generateMaze 200, 200;
+
+printf 'Maze as string = %s\n' : mazeToString $m;
+
+# $m[0][1] = ($m[0][1] | $bottom);
+
+# screenshot 'maze_nopath.png';
+
+printf 'Searching...\n';
+search $m;
+# go $m;
+
+# screenshot 'maze_path.png';
+
+# printf 'Rendering maze...\n';
+# renderMaze $m, $PERSQUARE;

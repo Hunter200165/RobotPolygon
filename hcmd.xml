@@ -1,0 +1,61 @@
+<Language name="hcmd" casesensitive="True">
+    <Attribute name="Var" forecol="#E58D7A" bold="false"> </Attribute>
+    <Attribute name="Symbol" forecol="#AAAAAA" bold="false"> </Attribute>
+    <Attribute name="Functions" forecol="#D3FBD8" bold="false"> </Attribute>
+    <Attribute name="Types" forecol="#3BB6C7" bold="false"> </Attribute>
+    <Attribute name="Keyword" forecol="#FFBC6C" bold="false"> </Attribute>
+    <Attribute name="Number" forecol="#AB6E7D"> </Attribute>
+    <Attribute name="String" forecol="#9BC0B3"> </Attribute>
+    <Attribute name="comment" bold="false"> </Attribute>
+
+    <Keyword>
+
+        for while if else
+        and or not
+        div mod
+        break continue return
+        true false const
+        local global
+        field
+        function method
+        class property inherits inline public protected private inherited
+            virtual override abstract static
+        arg defaultarg endexp
+
+    </Keyword>
+
+    <Identifiers>
+        <Functions>
+            sprintf
+            read write print printf
+            math
+                pi abs round floor ceil frac trunc exp ln sqrt
+                sqr sin cos tan cotan arcsin arccos arctan arccot
+                randomize randint randfloat
+            create Create
+            Add Remove
+            Contains
+        </Functions>
+        <Types>
+            ref raw int real string
+            array dictionary
+        </Types>
+    </Identifiers>
+
+    <!-- <Token Content="+= -= *= /= &lt;&lt;= &gt;&gt;=" Attribute="operator"> </Token> -->
+
+    <Comment start="#"> </Comment>
+    <String Start="'" End="'" Folding="True"> </String>
+    <String Start="&quot;" End="&quot;" Folding="True"> </String>
+    <String Start="&lt;&lt;&lt;" End="&gt;&gt;&gt;" Folding="True"> </String>
+
+    <Block name="curlyBrackets" start="{" end="}" folding="True"> </Block>
+
+    <Block name="squareBrackets" start="[" end="]" folding="True"> </Block>
+    <Block name="roundBrackets" start="(" end=")" folding="True"> </Block>
+
+    <Identifiers CharsStart="A..Za..z_" Content="A..Za..z0..9_"> </Identifiers>
+    <Token CharsStart="$" Content="A..Za..z0..9_" Attribute="Var"> </Token>
+    <Token CharsStart="0..9" Content="0..9" Attribute="NUMBER"> </Token>
+
+</Language>

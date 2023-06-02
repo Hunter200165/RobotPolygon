@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="12"/>
+    <BuildModes Active="Debug"/>
+    <Units>
+      <Unit>
+        <Filename Value="RobotPolygon.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="31"/>
+        <CursorPos X="60" Y="30"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="RobotPolygon\RobotPolygon.MainForm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="403"/>
+        <CursorPos X="52" Y="433"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\Program Repositories\metadarkstyle-main\metadarkstyle.pas"/>
+        <UnitName Value="MetaDarkStyle"/>
+        <EditorIndex Value="32"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\Program Repositories\metadarkstyle-main\metadarkstyledsgn.pas"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\lazarus\packager\registration\lazaruspackageintf.pas"/>
+        <UnitName Value="LazarusPackageIntf"/>
+        <EditorIndex Value="33"/>
+        <TopLine Value="26"/>
+        <CursorPos X="11" Y="47"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="RobotPolygon\RobotPolygon.Robot.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="26"/>
+        <TopLine Value="245"/>
+        <CursorPos X="39" Y="274"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\objpas\classes\classesh.inc"/>
+        <EditorIndex Value="28"/>
+        <CursorPos X="20" Y="26"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\objpas\types.pp"/>
+        <UnitName Value="Types"/>
+        <EditorIndex Value="29"/>
+        <TopLine Value="66"/>
+        <CursorPos X="3" Y="87"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\inc\typshrdh.inc"/>
+        <EditorIndex Value="30"/>
+        <TopLine Value="43"/>
+        <CursorPos X="3" Y="64"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\packages\fcl-image\src\fpcanvas.pp"/>
+        <UnitName Value="FPCanvas"/>
+        <EditorIndex Value="24"/>
+        <TopLine Value="302"/>
+        <CursorPos X="15" Y="322"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\packages\fcl-image\src\fpcanvas.inc"/>
+        <EditorIndex Value="25"/>
+        <TopLine Value="260"/>
+        <CursorPos X="3" Y="286"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\lazarus\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <EditorIndex Value="22"/>
+        <TopLine Value="1076"/>
+        <CursorPos X="15" Y="1095"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\lazarus\lcl\include\canvas.inc"/>
+        <EditorIndex Value="23"/>
+        <TopLine Value="1841"/>
+        <CursorPos X="3" Y="1858"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\Program Repositories\bgrabitmap-dev-bgrabitmap\bgrabitmap\unibitmap.inc"/>
+        <EditorIndex Value="20"/>
+        <TopLine Value="454"/>
+        <CursorPos X="14" Y="472"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\Program Repositories\bgrabitmap-dev-bgrabitmap\bgrabitmap\bgrapixel.inc"/>
+        <EditorIndex Value="21"/>
+        <TopLine Value="164"/>
+        <CursorPos X="5" Y="184"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCL\Components\Core\HCL.Core.HashTable.pas"/>
+        <EditorIndex Value="27"/>
+        <TopLine Value="46"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\Kernel\HCmdQuery.Kernel.ResourceManager.pas"/>
+        <EditorIndex Value="19"/>
+        <CursorPos X="82" Y="28"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="RobotPolygon\RobotPolygon.InjectStandards.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="128"/>
+        <CursorPos X="48" Y="157"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="234"/>
+        <CursorPos Y="268"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\inc\systemh.inc"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="929"/>
+        <CursorPos X="11" Y="950"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\win\syswin.inc"/>
+        <EditorIndex Value="17"/>
+        <TopLine Value="362"/>
+        <CursorPos X="3" Y="364"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.NativeObjects.pas"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="111"/>
+        <CursorPos X="11" Y="77"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.ControlFlow.pas"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="183"/>
+        <CursorPos Y="204"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\Kernel\HCmdQuery.Kernel.InterpreterBase.pas"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="386"/>
+        <CursorPos Y="406"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\Kernel\HCmdQuery.Kernel.Node.pas"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="149"/>
+        <CursorPos X="47" Y="173"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\Kernel\HCmdQuery.Kernel.CallBoundary.pas"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="271"/>
+        <CursorPos Y="301"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Operators.pas"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="238"/>
+        <CursorPos X="5" Y="265"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.StandardIO.pas"/>
+        <EditorIndex Value="2"/>
+        <CursorPos X="11" Y="16"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\HCmdQuery.Format.pas"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="314"/>
+        <CursorPos X="69" Y="344"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\objpas\math.pp"/>
+        <UnitName Value="Math"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="688"/>
+        <CursorPos X="12" Y="708"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\inc\system.inc"/>
+        <EditorIndex Value="16"/>
+        <TopLine Value="723"/>
+        <CursorPos X="3" Y="722"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\win\sysos.inc"/>
+        <EditorIndex Value="18"/>
+        <TopLine Value="169"/>
+        <CursorPos X="13" Y="238"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\HCmdQuery.SafeVariant.pas"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="586"/>
+        <CursorPos Y="607"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCL\Components\Core\HCL.Core.Commons.pas"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="139"/>
+        <CursorPos X="68" Y="162"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\HCmdQuery.SafeVariant.Operators.pas"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="10"/>
+        <CursorPos X="16" Y="43"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="29">
+      <Position>
+        <Filename Value="RobotPolygon\RobotPolygon.MainForm.pas"/>
+        <Caret Line="535" Column="155" TopLine="498"/>
+      </Position>
+      <Position>
+        <Filename Value="RobotPolygon\RobotPolygon.MainForm.pas"/>
+        <Caret Line="457" Column="86" TopLine="427"/>
+      </Position>
+      <Position>
+        <Filename Value="RobotPolygon\RobotPolygon.MainForm.pas"/>
+        <Caret Line="521" Column="21" TopLine="501"/>
+      </Position>
+      <Position>
+        <Filename Value="RobotPolygon\RobotPolygon.MainForm.pas"/>
+        <Caret Line="176" Column="21" TopLine="136"/>
+      </Position>
+      <Position>
+        <Filename Value="RobotPolygon\RobotPolygon.MainForm.pas"/>
+        <Caret Line="453" Column="95" TopLine="432"/>
+      </Position>
+      <Position>
+        <Filename Value="RobotPolygon\RobotPolygon.InjectStandards.pas"/>
+        <Caret Line="157" Column="48" TopLine="128"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="39" Column="11" TopLine="19"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="228" Column="5" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="254" Column="23" TopLine="226"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="235" Column="23" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="236" Column="26" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="251" Column="43" TopLine="226"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="236" Column="18" TopLine="213"/>
+      </Position>
+      <Position>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\inc\systemh.inc"/>
+        <Caret Line="950" Column="11" TopLine="929"/>
+      </Position>
+      <Position>
+        <Filename Value="E:\FPCUpDeluxe\fpcupdeluxe\fpcsrc\rtl\win\syswin.inc"/>
+        <Caret Line="364" Column="3" TopLine="362"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="268" Column="21" TopLine="227"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="252" Column="20" TopLine="227"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="262" Column="25" TopLine="227"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="265" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="263" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="265" Column="43" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="263" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="265" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="266" TopLine="232"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\RTL\HCmdQuery.RTL.Math.pas"/>
+        <Caret Line="268" TopLine="234"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\HCmdQuery.SafeVariant.pas"/>
+        <Caret Line="607" TopLine="586"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCL\Components\Core\HCL.Core.Commons.pas"/>
+        <Caret Line="40" Column="10"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCL\Components\Core\HCL.Core.Commons.pas"/>
+        <Caret Line="168" Column="38" TopLine="159"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCL\Components\Core\HCL.Core.Commons.pas"/>
+        <Caret Line="162" Column="68" TopLine="139"/>
+      </Position>
+      <Position>
+        <Filename Value="..\HCmdQuery-Rewind\HCmdQuery\HCmdQuery.SafeVariant.Operators.pas"/>
+        <Caret Line="43" Column="16" TopLine="10"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+  <Debugging>
+    <BreakPoints>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Expression Value="T > 128"/>
+        <Source Value="RobotPolygon\RobotPolygon.Robot.pas"/>
+        <Line Value="274"/>
+      </Item>
+    </BreakPoints>
+  </Debugging>
+</CONFIG>

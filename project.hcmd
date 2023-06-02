@@ -1,0 +1,406 @@
+scripthost::clearStdOut;
+printf '* * * Начало исполнения * * *\n';
+
+# Функция преобразования градусов в радианы
+function $rads {
+    local $degrees : arg::real 0;
+    endexp 1;
+
+    return (($degrees / 180) * math::pi());
+};
+
+# Функция преобразования радианов в градусы
+function $degs {
+    local $rads : arg::real 0;
+    endexp 1;
+    return (($rads / math::pi()) * 180);
+};
+
+# Константы, необходимые для работы программы
+global field $TOP, 1;
+global field $BOTTOM, 2;
+global field $LEFT, 4;
+global field $RIGHT, 8;
+global field $MAINSTREAM, 16;
+
+global field $NOT_TOP, ~($TOP);
+global field $NOT_BOTTOM, ~($BOTTOM);
+global field $NOT_LEFT, ~($LEFT);
+global field $NOT_RIGHT, ~($RIGHT);
+
+# Константы размера ячейки и толщины стен
+global field $CELL_SIZE, 50;
+global field $WALL_WIDTH, 6;
+
+# Установка предопределённого состояния генератора псевдослучайных чисел
+math::randomize 100;
+
+# Функция генерации лабиринта заданных размеров
+# Аргументы:
+# 1. Ширина лабиринта, в ячейках
+# 2. Высота лабиринта, в ячейках
+# Возвращает:
+#   Двумерный массив целых чисел переданного размера
+#   Каждый элемент массива является представлением ячейки лабиринта в виде целого числа
+#   Это число является битовой картой стен ячейки из констант, описанных выше
+function $generateMaze
+{
+    local $w : arg::int 0;
+    local $h : arg::int 1;
+    endexp 2;
+
+    local $mesh, array::create();
+    for $i 1, $h {
+        local $row, array::create();
+        for $k 1, $w {
+            $row.Add! 0;
+        };
+        $mesh.Add! $row;
+    };
+
+    for $i 0, ($h - 1) {
+        $mesh[$i][0] |= $LEFT;
+        $mesh[$i][[$w - 1]] |= $RIGHT;
+    };
+
+    for $i 0, ($w - 1) {
+        $mesh[0][$i] |= $TOP;
+        $mesh[[$h - 1]][$i] |= $BOTTOM;
+    };
+
+    local $paths, array::create(4);
+    local $currentX, 0;
+    local $currentY, 0;
+    local $exitX, ($w - 1);
+    local $exitY, ($h - 1);
+
+    local $occupiedX, array::create(($w div 2));
+    local $occupiedY, array::create(($h div 2));
+
+    $mesh[[$h div 2]][[$w div 2]] := ($LEFT | : $RIGHT | : $TOP | : $BOTTOM | $MAINSTREAM);
+
+    while ($occupiedX.Length < ($h * $w)) {
+        while ($paths.Length > 0)
+            $paths.Remove!();
+
+        local $rind, math::randint($occupiedX.Length);
+        while (true) {
+            $currentX := $occupiedX[$rind];
+            $currentY := $occupiedY[$rind];
+
+            if ($currentX < 0) {
+                $rind := math::randint($occupiedX.Length);
+                continue;
+            };
+
+            if (($currentX > 0) and (not : $mesh[$currentY][[$currentX - 1]] & ($RIGHT | $MAINSTREAM))) {
+                $paths.Add! 3;
+                break;
+            };
+
+            if (($currentY > 0) and (not : $mesh[[$currentY - 1]][$currentX] & ($BOTTOM | $MAINSTREAM))) {
+                $paths.Add! 12;
+                break;
+            };
+
+            if (($currentX < ($w - 1)) and (not : $mesh[$currentY][[$currentX + 1]] & ($LEFT | $MAINSTREAM))) {
+                $paths.Add! 1;
+                break;
+            };
+
+            if (($currentY < ($h - 1)) and (not : $mesh[[$currentY + 1]][$currentX] & ($TOP | $MAINSTREAM))) {
+                $paths.Add! 4;
+                break;
+            };
+
+            $occupiedX[$rind] := -1;
+            $occupiedY[$rind] := -1;
+
+            $rind := math::randint($occupiedX.Length);
+        };
+
+        local $step, 0;
+        while (
+            ($step < (math::ceil : ($w + $h) / 4)) and :
+            ($paths.Length != 0) and :
+            ($currentX != $exitX) or ($currentY != $exitY)
+        ) {
+            $step += 1;
+
+            local $currentPath, $paths[[math::randint $paths.Length]];
+            while ($paths.Length > 0)
+                $paths.Remove!();
+
+            local $dx, 0;
+            local $dy, 0;
+
+            if (($currentPath & 3) == 3) {
+                $dx := -1;
+            } else : if (($currentPath & 1) == 1) :
+                $dx := 1;
+
+            if (($currentPath & 12) == 12) {
+                $dy := -1;
+            } else : if (($currentPath & 12) == 4) :
+                $dy := 1;
+
+            local $c : $LEFT | : $RIGHT | : $TOP | : $BOTTOM | $MAINSTREAM;
+
+            if (($currentX >= 0) and ($currentY >= 0)) {
+                if ($dx == 1) {
+                    $mesh[$currentY][$currentX] &= $NOT_RIGHT;
+                } else : if ($dx == -1) {
+                    $mesh[$currentY][$currentX] &= $NOT_LEFT;
+                } else : if ($dy == 1) {
+                    $mesh[$currentY][$currentX] &= $NOT_BOTTOM;
+                } else :
+                    $mesh[$currentY][$currentX] &= $NOT_TOP;
+            };
+
+            if ($dx == 1) {
+                $c &= $NOT_LEFT;
+            } else : if ($dx == -1) {
+                $c &= $NOT_RIGHT;
+            } else : if ($dy == 1) {
+                $c &= $NOT_TOP;
+            } else :
+                $c &= $NOT_BOTTOM;
+
+            $currentX += $dx;
+            $currentY += $dy;
+
+            $occupiedX.Add! $currentX;
+            $occupiedY.Add! $currentY;
+
+            $mesh[$currentY][$currentX] := $c;
+
+            if (($currentX > 0) and (not : $mesh[$currentY][[$currentX - 1]] & ($RIGHT | $MAINSTREAM))) {
+                $paths.Add! 3;
+            };
+
+            if (($currentX < ($w - 1)) and (not : $mesh[$currentY][[$currentX + 1]] & ($LEFT | $MAINSTREAM))) {
+                $paths.Add! 1;
+            };
+
+            if (($currentY > 0) and (not : $mesh[[$currentY - 1]][$currentX] & ($BOTTOM | $MAINSTREAM))) {
+                $paths.Add! 12;
+            };
+
+            if (($currentY < ($h - 1)) and (not : $mesh[[$currentY + 1]][$currentX] & ($TOP | $MAINSTREAM))) {
+                $paths.Add! 4;
+            };
+        };
+    };
+
+    return $mesh;
+};
+
+field $MAZE_START, 50;
+
+# Функция создания физического воплощения лабиринта в мире по его прообразу
+# Создаёт физические стены ячеек лабиринта
+# Аргументы:
+# 1. Двумерный массив представления ячеек в виде целых чисел
+function $createMaze
+{
+    local $maze : arg 0;
+    endexp 1;
+
+    for $y 0, ($maze.Length - 1) {
+        $maze[$y].Add! $LEFT;
+    };
+
+    $maze.Add! array::create();
+    for $x 0, ($maze[0].Length - 1) {
+        $maze[[$maze.Length - 1]].Add! (if ($x <= ($maze[0].Length - 3)) $TOP else 0);
+    };
+
+    local $currentX, 0;
+    local $currentY, $MAZE_START;
+
+    for $y 0, ($maze.Length - 1) {
+        $currentX := $MAZE_START;
+        for $x 0, ($maze[$y].Length - 1) {
+            local $cell, $maze[$y][$x];
+            if ($cell & $TOP) {
+                world::createWall
+                    {
+                        if (($cell & $LEFT) or (($y > 0) and ($maze[[$y - 1]][$x] & $LEFT))) {
+                            $currentX + $WALL_WIDTH
+                        } else
+                            $currentX;
+                    },
+                    $currentY,
+                    {
+                        if (($cell & $RIGHT) or (($y > 0) and ($maze[[$y - 1]][$x] & $RIGHT)))
+                            ($currentX + : $CELL_SIZE - $WALL_WIDTH)
+                        else
+                            ($currentX + $CELL_SIZE);
+                    }
+                    $currentY,
+                    width=$WALL_WIDTH;
+            };
+            if ($cell & $LEFT) {
+                world::createWall
+                    $currentX,
+                    {
+                        if (($y > 0) and ($maze[[$y - 1]][$x] & $LEFT)) {
+                            const $currentY;
+                        } else
+                            ($currentY - ($WALL_WIDTH / 2));
+                    },
+                    $currentX,
+                    {
+                        if (($y < ($maze.Length - 1)) and ($maze[[$y + 1]][$x] & $LEFT))
+                            ($currentY + $CELL_SIZE)
+                        else
+                            ($currentY + : $CELL_SIZE + ($WALL_WIDTH / 2));
+                    }, width=$WALL_WIDTH;
+            };
+
+            $currentX += $CELL_SIZE;
+        };
+        $currentY += $CELL_SIZE;
+    };
+};
+
+# Функция подготовки мира
+# 1. Разрушает стены, которые уже были созданы
+# 2. Генерирует сетку лабиринта
+# 3. Создаёт физическое воплощение лабиринта в мире
+function $prepareWorld
+{
+    world::destroyWalls;
+
+    printf 'Генерация лабиринта...\n';
+    local $maze : generateMaze 10, 10;
+    printf 'Лабиринт сгенерирован\n';
+    printf 'Построение лабиринта...\n';
+    createMaze $maze;
+    printf 'Лабиринт построен\n';
+
+};
+
+# Совершаем подготовку мира
+prepareWorld;
+
+# Устанавливаем робота в позицию (MAZE_START + 25; MAZE_START + 25), то есть в середину
+#   левой верхней ячейки лабиринта
+# А также устанавливаем угол поворота в 180 градусов
+# И устанавливаем предельную видимость датчика робота в 40 единиц
+world::setRobotPosition ($MAZE_START + 25), ($MAZE_START + 25);
+world::setRobotRotation (rads 180);
+world::setRobotVisionDistance 40;
+
+# Определение дельты перемещения вперёд за один вызов функции robot::forward
+field $delta, 0.5;
+
+class $Robot {
+    # Определение состояния робота:
+    # 1. Текущий поворот по координатам
+    # 2. Текущее положение
+    $Robot.dx := 0;
+    $Robot.dy := 1;
+
+    $Robot.currentX := 0;
+    $Robot.currentY := 0;
+
+    # Вычисляемое поле (свойство), которое показывает - есть ли перед роботом
+    #   стена в данный момент или нет
+    protected property $Robot.Blocked
+        read inline {
+            local $dist : robot::retrieve;
+            ($dist > 0) and ($dist < 30)
+        };
+
+    # Метод движения робота вперёд, пока выполняется переданное условие
+    # Аргументы:
+    # 1. Предикат. Пока истиннен - робот будет продолжать двигаться вперёд
+    #    Использует механизм вычисления по требованию для постоянного вычисления аргумента
+    # Возвращает:
+    #   Количество шагов, пройденных роботом
+    protected method $Robot.MoveForwardWhile {
+        endexp 1;
+        local $steps, 0;
+        while (arg 0) {
+            robot::forward;
+            $steps += 1;
+        };
+        return $steps;
+    };
+
+    # Метод движения робота вперёд ровно на одну ячейку лабиринта
+    protected method $Robot.MoveByOneCell {
+        endexp 0;
+        local $dist, $CELL_SIZE;
+        $self.currentX += $self.dx;
+        $self.currentY += $self.dy;
+        # Использует метод MoveForwardWhile с предикатом
+        return ($self.MoveForwardWhile! (($dist -= $delta) >= 0));
+    };
+
+    # Метод поворота робота направо
+    # Изменяет поля, отвечающие за состояние поворота робота
+    protected method $Robot.RotateRight {
+        endexp 0;
+        robot::rotate rads(90);
+        local $newdx, (- $self.dy);
+        $self.dy := $self.dx;
+        $self.dx := $newdx;
+        return (true);
+    };
+
+    # Метод поворота робота налево
+    # Изменяет поля, отвечающие за состояние поворота робота
+    protected method $Robot.RotateLeft {
+        endexp 0;
+        robot::rotate rads(-90);
+        local $newdx, $self.dy;
+        $self.dy := (- $self.dx);
+        $self.dx := $newdx;
+        return (true);
+    };
+
+    # Метод для решения роботом лабиринта методом правой руки
+    public method $Robot.SolveRightHand {
+        endexp 0;
+        while (($self.currentX != 9) or ($self.currentY != 9)) {
+            printf "Текущее положение => (%d, %d)\n", $self.currentX, $self.currentY;
+
+            # Если правый проход свободен - идём туда
+            if (not (($self.RotateRight!) and $self.Blocked)) {
+                $self.MoveByOneCell!;
+                continue;
+            };
+            # В противном случае - поворачиваемся налево
+            #   (то есть восстанавливаем взгляд робота)
+            $self.RotateLeft!;
+            # И если центральный проход не заблокирован - идём туда
+            if (not $self.Blocked) {
+                $self.MoveByOneCell!;
+                continue;
+            };
+            # В противном случае - смотрим левый проход, и если он свободен -
+            #   идём туда
+            if (($self.RotateLeft!) and (not $self.Blocked)) {
+                $self.MoveByOneCell!;
+                continue;
+            };
+            # Иначе мы зашли в тупик - разворачиваемся и идём обратно
+            $self.RotateLeft!;
+            $self.MoveByOneCell!;
+        };
+    };
+
+    # Конструктор объекта
+    public method $Robot.Create virtual {
+    };
+};
+
+local $robot : $Robot.Create!;
+$robot.SolveRightHand!;
+
+print "Выход";
+
+# robot::rotate rads(-90);
+
